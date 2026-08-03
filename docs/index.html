@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Space Invaders for macOS — a pixel-perfect, native homage to the 1978 arcade classic. Original 224×256 resolution, CRT scanlines, 8-bit sounds. Free, signed & notarized." />
+
+  <meta property="og:title" content="Space Invaders for macOS — retro arcade, pixel-perfect" />
+  <meta property="og:description" content="Native macOS homage to the 1978 classic: original arcade resolution, CRT scanlines, 8-bit square-wave sounds, Sparkle auto-updates. Free & open source." />
+  <meta property="og:image" content="https://vincentlauriat.github.io/SpaceInvaders/icon.png" />
+  <meta property="og:url" content="https://vincentlauriat.github.io/SpaceInvaders/" />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <link rel="canonical" href="https://vincentlauriat.github.io/SpaceInvaders/" />
+  <link rel="icon" type="image/png" href="icon.png" />
+  <title>Space Invaders for macOS — retro arcade, pixel-perfect</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --green: #3cff6e;
+      --green-dim: #1d8f42;
+      --amber: #ffc02e;
+      --red: #ff4a3d;
+      --white: #eaf5ea;
+      --bg: #030408;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--white);
+      font-family: "Press Start 2P", "Courier New", monospace;
+      line-height: 1.8;
+      overflow-x: hidden;
+    }
+    /* CRT overlay: scanlines + vignette */
+    body::before {
+      content: "";
+      position: fixed; inset: 0; z-index: 50; pointer-events: none;
+      background:
+        repeating-linear-gradient(0deg, rgba(0,0,0,.22) 0 1px, transparent 1px 3px),
+        radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,.55) 100%);
+    }
+    .stars {
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    }
+    .wrap { position: relative; z-index: 1; max-width: 980px; margin: 0 auto; padding: 0 20px; }
+
+    header { text-align: center; padding: 72px 0 40px; }
+    .hud {
+      display: flex; justify-content: space-between; font-size: 11px;
+      color: var(--white); max-width: 560px; margin: 0 auto 56px;
+    }
+    .hud b { display: block; margin-top: 10px; font-weight: normal; }
+    h1 {
+      font-size: clamp(28px, 6vw, 54px);
+      color: var(--green);
+      text-shadow: 0 0 18px rgba(60,255,110,.55);
+      letter-spacing: 2px;
+      line-height: 1.35;
+    }
+    .invader-row { margin: 34px 0 10px; display: flex; justify-content: center; gap: 26px; }
+    .invader-row canvas { image-rendering: pixelated; }
+    .tagline { font-size: 12px; color: var(--white); max-width: 640px; margin: 22px auto 0; line-height: 2.1; }
+
+    .cta { margin: 42px 0 8px; display: flex; flex-direction: column; align-items: center; gap: 18px; }
+    .btn {
+      display: inline-block; text-decoration: none;
+      font-family: inherit; font-size: 14px;
+      padding: 20px 30px; border: 3px solid var(--amber);
+      color: var(--amber); background: rgba(255,192,46,.06);
+      box-shadow: 0 0 22px rgba(255,192,46,.25), inset 0 0 14px rgba(255,192,46,.08);
+      animation: blink-soft 1.6s steps(2) infinite;
+    }
+    .btn:hover { background: var(--amber); color: #000; animation: none; }
+    @keyframes blink-soft { 50% { box-shadow: 0 0 8px rgba(255,192,46,.12), inset 0 0 4px rgba(255,192,46,.04); } }
+    .btn-sub { font-size: 9px; color: #9fb59f; line-height: 2; }
+    .btn-gh {
+      font-size: 10px; color: var(--green); text-decoration: none;
+      border-bottom: 1px dashed var(--green-dim); padding-bottom: 3px;
+    }
+    .btn-gh:hover { color: var(--white); }
+
+    section { padding: 56px 0; }
+    h2 {
+      font-size: 16px; color: var(--amber); text-align: center; margin-bottom: 40px;
+      letter-spacing: 1px;
+    }
+    h2::before, h2::after { content: " * "; color: var(--green-dim); }
+
+    .shots { display: grid; grid-template-columns: 1fr 1fr; gap: 26px; }
+    .shot { border: 3px solid #1a2a1a; box-shadow: 0 0 30px rgba(60,255,110,.12); }
+    .shot img { width: 100%; display: block; image-rendering: auto; }
+    @media (max-width: 700px) { .shots { grid-template-columns: 1fr; } }
+
+    .features { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; font-size: 10px; }
+    @media (max-width: 700px) { .features { grid-template-columns: 1fr; } }
+    .feat {
+      border: 2px solid #14301b; padding: 20px; line-height: 2;
+      background: rgba(10,25,14,.35);
+    }
+    .feat b { color: var(--green); display: block; margin-bottom: 10px; font-weight: normal; font-size: 11px; }
+
+    .scoretable { text-align: center; font-size: 12px; line-height: 3; }
+    .scoretable .mystery { color: var(--red); }
+    .scoretable canvas { vertical-align: middle; margin-right: 14px; image-rendering: pixelated; }
+
+    .controls { text-align: center; font-size: 11px; line-height: 3.2; }
+    kbd {
+      font-family: inherit; font-size: 10px; color: var(--bg);
+      background: var(--white); padding: 6px 10px; border-radius: 3px;
+      box-shadow: 0 3px 0 #5a6a5a; margin: 0 4px;
+    }
+
+    footer {
+      text-align: center; font-size: 9px; color: #7a8f7a;
+      padding: 46px 20px 70px; line-height: 2.4;
+      border-top: 2px solid #0e1f12; margin-top: 30px;
+    }
+    footer a { color: var(--green); text-decoration: none; }
+    footer a:hover { color: var(--white); }
+    .baseline { height: 2px; background: var(--green); max-width: 980px; margin: 0 auto; box-shadow: 0 0 12px rgba(60,255,110,.6); }
+  </style>
+</head>
+<body>
+  <canvas class="stars" id="stars"></canvas>
+
+  <div class="wrap">
+    <header>
+      <div class="hud">
+        <span>SCORE&lt;1&gt;<b>0000</b></span>
+        <span>HI-SCORE<b>9990</b></span>
+        <span>CREDIT<b>FREE</b></span>
+      </div>
+      <h1>SPACE<br>INVADERS</h1>
+      <div class="invader-row" id="invaders" aria-hidden="true"></div>
+      <p class="tagline">
+        A PIXEL-PERFECT, NATIVE MACOS HOMAGE TO THE 1978 ARCADE CLASSIC.
+        ORIGINAL 224×256 RESOLUTION · CRT SCANLINES · 8-BIT SOUNDS ·
+        THE FOUR-NOTE MARCH THAT SPEEDS UP AS THEY CLOSE IN.
+      </p>
+      <div class="cta">
+        <a class="btn" id="download" href="https://github.com/vincentlauriat/SpaceInvaders/releases/latest">▼ INSERT COIN — DOWNLOAD</a>
+        <span class="btn-sub" id="dlmeta">FREE · OPEN SOURCE · SIGNED &amp; NOTARIZED · MACOS 13+ · AUTO-UPDATES</span>
+        <a class="btn-gh" href="https://github.com/vincentlauriat/SpaceInvaders" target="_blank" rel="noopener">VIEW SOURCE ON GITHUB →</a>
+      </div>
+    </header>
+
+    <section>
+      <h2>SCORE ADVANCE TABLE</h2>
+      <div class="scoretable">
+        <div><canvas data-inv="ufo" width="16" height="7"></canvas><span class="mystery">= ? MYSTERY</span></div>
+        <div><canvas data-inv="squid" width="8" height="8"></canvas>= 30 POINTS</div>
+        <div><canvas data-inv="crab" width="11" height="8"></canvas>= 20 POINTS</div>
+        <div><canvas data-inv="octopus" width="12" height="8"></canvas>= 10 POINTS</div>
+      </div>
+    </section>
+
+    <section>
+      <h2>ACTUAL GAMEPLAY</h2>
+      <div class="shots">
+        <figure class="shot"><img src="screenshot-title.png" alt="Space Invaders title screen with score advance table" loading="lazy"></figure>
+        <figure class="shot"><img src="screenshot-game.png" alt="Space Invaders gameplay: invader grid, shields and cannon" loading="lazy"></figure>
+      </div>
+    </section>
+
+    <section>
+      <h2>WHAT YOU GET</h2>
+      <div class="features">
+        <div class="feat"><b>1978, FAITHFULLY</b>
+          11×5 invader grid, 2-frame animations, accelerating block movement,
+          and the original one-shot-on-screen rule. Waves start lower each level.</div>
+        <div class="feat"><b>DESTRUCTIBLE SHIELDS</b>
+          4 bunkers eroded shot by shot — and chewed through by descending invaders.</div>
+        <div class="feat"><b>8-BIT SOUNDS</b>
+          Every effect is a code-generated square wave: pew, boom, UFO siren,
+          and the four-note bass march. Press M for silence.</div>
+        <div class="feat"><b>CRT LOOK</b>
+          Scanlines, phosphor green and gel-overlay tints, hand-made 5×7 bitmap
+          font. Big crisp pixels, zero blur.</div>
+        <div class="feat"><b>MYSTERY UFO</b>
+          Crosses the top with its warbling siren. 50? 100? 300? One way to find out.</div>
+        <div class="feat"><b>NATIVE &amp; SAFE</b>
+          Swift + SpriteKit. Developer ID signed, Apple-notarized, automatic
+          updates via Sparkle. Hi-score saved between sessions.</div>
+      </div>
+    </section>
+
+    <section>
+      <h2>CONTROLS</h2>
+      <div class="controls">
+        <div><kbd>←</kbd><kbd>→</kbd> MOVE</div>
+        <div><kbd>SPACE</kbd> FIRE / START</div>
+        <div><kbd>P</kbd> PAUSE &nbsp; <kbd>M</kbd> MUTE &nbsp; <kbd>ESC</kbd> TITLE</div>
+      </div>
+    </section>
+  </div>
+
+  <div class="baseline"></div>
+  <footer>
+    MIT LICENSE · <a href="https://github.com/vincentlauriat/SpaceInvaders" target="_blank" rel="noopener">GITHUB</a> ·
+    <a href="https://lauriat.fr" target="_blank" rel="noopener">LAURIAT.FR</a> ·
+    <a href="https://vincentlauriat.github.io" target="_blank" rel="noopener">MORE APPS</a><br>
+    "SPACE INVADERS" IS A TRADEMARK OF TAITO CORPORATION.<br>
+    THIS IS AN UNOFFICIAL FAN HOMAGE, BUILT FOR FUN AND NOSTALGIA.
+  </footer>
+
+  <script>
+    // ---- pixel sprites (same patterns as the game) ----
+    const SPRITES = {
+      squid: [["...##...","..####..",".######.","##.##.##","########","..#..#..",".#.##.#.","#.#..#.#"],
+              ["...##...","..####..",".######.","##.##.##","########",".#.##.#.","#......#",".#....#."]],
+      crab: [["..#.....#..","...#...#...","..#######..",".##.###.##.","###########","#.#######.#","#.#.....#.#","...##.##..."],
+             ["..#.....#..","#..#...#..#","#.#######.#","###.###.###","###########",".#########.","..#.....#..",".#.......#."]],
+      octopus: [["....####....",".##########.","############","###..##..###","############","...##..##...","..##.##.##..","##........##"],
+                ["....####....",".##########.","############","###..##..###","############","..###..###..",".##..##..##.","..##....##.."]],
+      ufo: [[".....######.....","...##########...","..############..",".##.##.##.##.##.","################","...###....###...","....#......#...."]]
+    };
+    function draw(canvas, pattern, color) {
+      const ctx = canvas.getContext("2d");
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = color;
+      pattern.forEach((row, y) => [...row].forEach((ch, x) => { if (ch === "#") ctx.fillRect(x, y, 1, 1); }));
+    }
+    // hero row: three animated invaders
+    const hero = document.getElementById("invaders");
+    [["squid","#eaf5ea",8],["crab","#3cff6e",11],["octopus","#eaf5ea",12]].forEach(([type, color, w]) => {
+      const c = document.createElement("canvas");
+      c.width = w; c.height = 8;
+      c.style.width = (w * 5) + "px"; c.style.height = "40px";
+      c.dataset.type = type; c.dataset.color = color;
+      hero.appendChild(c);
+    });
+    let frame = 0;
+    function tick() {
+      frame ^= 1;
+      hero.querySelectorAll("canvas").forEach(c => draw(c, SPRITES[c.dataset.type][frame], c.dataset.color));
+    }
+    tick(); setInterval(tick, 600);
+    // score table sprites (static, scaled via CSS)
+    document.querySelectorAll("[data-inv]").forEach(c => {
+      const type = c.dataset.inv;
+      c.style.width = (c.width * 3) + "px"; c.style.height = (c.height * 3) + "px";
+      draw(c, SPRITES[type][0], type === "ufo" ? "#ff4a3d" : "#eaf5ea");
+    });
+    // ---- starfield ----
+    const s = document.getElementById("stars"), sc = s.getContext("2d");
+    function stars() {
+      s.width = innerWidth; s.height = innerHeight;
+      for (let i = 0; i < 90; i++) {
+        sc.fillStyle = `rgba(220,255,230,${0.15 + Math.random() * 0.5})`;
+        sc.fillRect(Math.random() * s.width, Math.random() * s.height, 2, 2);
+      }
+    }
+    stars(); addEventListener("resize", stars);
+    // ---- direct DMG link from the latest GitHub release ----
+    fetch("https://api.github.com/repos/vincentlauriat/SpaceInvaders/releases/latest")
+      .then(r => r.json())
+      .then(rel => {
+        const dmg = (rel.assets || []).find(a => a.name.endsWith(".dmg"));
+        if (dmg) document.getElementById("download").href = dmg.browser_download_url;
+        if (rel.tag_name) document.getElementById("dlmeta").textContent =
+          rel.tag_name.toUpperCase() + " · FREE · OPEN SOURCE · SIGNED & NOTARIZED · MACOS 13+ · AUTO-UPDATES";
+      }).catch(() => {});
+  </script>
+</body>
+</html>
