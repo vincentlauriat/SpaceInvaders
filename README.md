@@ -9,6 +9,8 @@
 [![Swift](https://img.shields.io/badge/Swift-5.9-orange?logo=swift)](https://swift.org)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
+**[🕹️ vincentlauriat.github.io/SpaceInvaders](https://vincentlauriat.github.io/SpaceInvaders/)**
+
 Runs at the original **224×256 arcade resolution**, upscaled ×3 with crisp
 nearest-neighbor pixels. CRT scanlines, a hand-made 5×7 bitmap font, 8-bit
 square-wave sounds — and the famous four-note bass march that speeds up as
