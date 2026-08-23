@@ -87,5 +87,6 @@ appcast.xml         Sparkle update feed
 
 ## 📜 License
 
-[MIT](LICENSE). *Space Invaders* is a trademark of TAITO Corporation — this
-is an unofficial fan homage, built for fun and nostalgia.
+[MIT](LICENSE). *Space Invaders* is a trademark of TAITO Corporation. This
+project is an unofficial fan homage, built for fun and nostalgia, and is not
+affiliated with or endorsed by TAITO.
