@@ -1,272 +1,48 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" style="--accent:#3cff6e;--on-accent:#141414;--accent-ink:#007e20">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description" content="Space Invaders for macOS — a pixel-perfect, native homage to the 1978 arcade classic. Original 224×256 resolution, CRT scanlines, 8-bit sounds. Free, signed & notarized." />
-
-  <meta property="og:title" content="Space Invaders for macOS — retro arcade, pixel-perfect" />
-  <meta property="og:description" content="Native macOS homage to the 1978 classic: original arcade resolution, CRT scanlines, 8-bit square-wave sounds, Sparkle auto-updates. Free & open source." />
-  <meta property="og:image" content="https://vincentlauriat.github.io/SpaceInvaders/icon.png" />
-  <meta property="og:url" content="https://vincentlauriat.github.io/SpaceInvaders/" />
-  <meta property="og:type" content="website" />
-  <meta name="twitter:card" content="summary_large_image" />
-
-  <link rel="canonical" href="https://vincentlauriat.github.io/SpaceInvaders/" />
-  <link rel="icon" type="image/png" href="icon.png" />
-  <title>Space Invaders for macOS — retro arcade, pixel-perfect</title>
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
-
-  <style>
-    :root {
-      --green: #3cff6e;
-      --green-dim: #1d8f42;
-      --amber: #ffc02e;
-      --red: #ff4a3d;
-      --white: #eaf5ea;
-      --bg: #030408;
-    }
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    html { scroll-behavior: smooth; }
-    body {
-      background: var(--bg);
-      color: var(--white);
-      font-family: "Press Start 2P", "Courier New", monospace;
-      line-height: 1.8;
-      overflow-x: hidden;
-    }
-    /* CRT overlay: scanlines + vignette */
-    body::before {
-      content: "";
-      position: fixed; inset: 0; z-index: 50; pointer-events: none;
-      background:
-        repeating-linear-gradient(0deg, rgba(0,0,0,.22) 0 1px, transparent 1px 3px),
-        radial-gradient(ellipse at center, transparent 55%, rgba(0,0,0,.55) 100%);
-    }
-    .stars {
-      position: fixed; inset: 0; z-index: 0; pointer-events: none;
-    }
-    .wrap { position: relative; z-index: 1; max-width: 980px; margin: 0 auto; padding: 0 20px; }
-
-    header { text-align: center; padding: 72px 0 40px; }
-    .hud {
-      display: flex; justify-content: space-between; font-size: 11px;
-      color: var(--white); max-width: 560px; margin: 0 auto 56px;
-    }
-    .hud b { display: block; margin-top: 10px; font-weight: normal; }
-    h1 {
-      font-size: clamp(28px, 6vw, 54px);
-      color: var(--green);
-      text-shadow: 0 0 18px rgba(60,255,110,.55);
-      letter-spacing: 2px;
-      line-height: 1.35;
-    }
-    .invader-row { margin: 34px 0 10px; display: flex; justify-content: center; gap: 26px; }
-    .invader-row canvas { image-rendering: pixelated; }
-    .tagline { font-size: 12px; color: var(--white); max-width: 640px; margin: 22px auto 0; line-height: 2.1; }
-
-    .cta { margin: 42px 0 8px; display: flex; flex-direction: column; align-items: center; gap: 18px; }
-    .btn {
-      display: inline-block; text-decoration: none;
-      font-family: inherit; font-size: 14px;
-      padding: 20px 30px; border: 3px solid var(--amber);
-      color: var(--amber); background: rgba(255,192,46,.06);
-      box-shadow: 0 0 22px rgba(255,192,46,.25), inset 0 0 14px rgba(255,192,46,.08);
-      animation: blink-soft 1.6s steps(2) infinite;
-    }
-    .btn:hover { background: var(--amber); color: #000; animation: none; }
-    @keyframes blink-soft { 50% { box-shadow: 0 0 8px rgba(255,192,46,.12), inset 0 0 4px rgba(255,192,46,.04); } }
-    .btn-sub { font-size: 9px; color: #9fb59f; line-height: 2; }
-    .btn-gh {
-      font-size: 10px; color: var(--green); text-decoration: none;
-      border-bottom: 1px dashed var(--green-dim); padding-bottom: 3px;
-    }
-    .btn-gh:hover { color: var(--white); }
-
-    section { padding: 56px 0; }
-    h2 {
-      font-size: 16px; color: var(--amber); text-align: center; margin-bottom: 40px;
-      letter-spacing: 1px;
-    }
-    h2::before, h2::after { content: " * "; color: var(--green-dim); }
-
-    .shots { display: grid; grid-template-columns: 1fr 1fr; gap: 26px; }
-    .shot { border: 3px solid #1a2a1a; box-shadow: 0 0 30px rgba(60,255,110,.12); }
-    .shot img { width: 100%; display: block; image-rendering: auto; }
-    @media (max-width: 700px) { .shots { grid-template-columns: 1fr; } }
-
-    .features { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; font-size: 10px; }
-    @media (max-width: 700px) { .features { grid-template-columns: 1fr; } }
-    .feat {
-      border: 2px solid #14301b; padding: 20px; line-height: 2;
-      background: rgba(10,25,14,.35);
-    }
-    .feat b { color: var(--green); display: block; margin-bottom: 10px; font-weight: normal; font-size: 11px; }
-
-    .scoretable { text-align: center; font-size: 12px; line-height: 3; }
-    .scoretable .mystery { color: var(--red); }
-    .scoretable canvas { vertical-align: middle; margin-right: 14px; image-rendering: pixelated; }
-
-    .controls { text-align: center; font-size: 11px; line-height: 3.2; }
-    kbd {
-      font-family: inherit; font-size: 10px; color: var(--bg);
-      background: var(--white); padding: 6px 10px; border-radius: 3px;
-      box-shadow: 0 3px 0 #5a6a5a; margin: 0 4px;
-    }
-
-    footer {
-      text-align: center; font-size: 9px; color: #7a8f7a;
-      padding: 46px 20px 70px; line-height: 2.4;
-      border-top: 2px solid #0e1f12; margin-top: 30px;
-    }
-    footer a { color: var(--green); text-decoration: none; }
-    footer a:hover { color: var(--white); }
-    .baseline { height: 2px; background: var(--green); max-width: 980px; margin: 0 auto; box-shadow: 0 0 12px rgba(60,255,110,.6); }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Space Invaders for macOS — retro arcade, pixel-perfect</title>
+<meta name="description" content="Space Invaders for macOS — a pixel-perfect, native homage to the 1978 arcade classic. Original 224×256 resolution, CRT scanlines, 8-bit sounds. Free, signed &amp; notarized.">
+<meta name="theme-color" content="#eff1f2">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Space Invaders for macOS — retro arcade, pixel-perfect">
+<meta property="og:description" content="Space Invaders for macOS — a pixel-perfect, native homage to the 1978 arcade classic. Original 224×256 resolution, CRT scanlines, 8-bit sounds. Free, signed &amp; notarized.">
+<meta property="og:url" content="https://vincentlauriat.github.io/SpaceInvaders/">
+<meta property="og:image" content="https://vincentlauriat.github.io/SpaceInvaders/icon.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="icon.png">
+<link rel="preload" href="/assets/schibsted.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/assets/monograph/v1/monograph.css">
+<link rel="canonical" href="https://vincentlauriat.github.io/SpaceInvaders/">
 </head>
 <body>
-  <canvas class="stars" id="stars"></canvas>
-
-  <div class="wrap">
-    <header>
-      <div class="hud">
-        <span>SCORE&lt;1&gt;<b>0000</b></span>
-        <span>HI-SCORE<b>9990</b></span>
-        <span>CREDIT<b>FREE</b></span>
-      </div>
-      <h1>SPACE<br>INVADERS</h1>
-      <div class="invader-row" id="invaders" aria-hidden="true"></div>
-      <p class="tagline">
-        A PIXEL-PERFECT, NATIVE MACOS HOMAGE TO THE 1978 ARCADE CLASSIC.
-        ORIGINAL 224×256 RESOLUTION · CRT SCANLINES · 8-BIT SOUNDS ·
-        THE FOUR-NOTE MARCH THAT SPEEDS UP AS THEY CLOSE IN.
-      </p>
-      <div class="cta">
-        <a class="btn" id="download" href="https://github.com/vincentlauriat/SpaceInvaders/releases/latest">▼ INSERT COIN — DOWNLOAD</a>
-        <span class="btn-sub" id="dlmeta">FREE · OPEN SOURCE · SIGNED &amp; NOTARIZED · MACOS 13+ · AUTO-UPDATES</span>
-        <a class="btn-gh" href="https://github.com/vincentlauriat/SpaceInvaders" target="_blank" rel="noopener">VIEW SOURCE ON GITHUB →</a>
-      </div>
-    </header>
-
-    <section>
-      <h2>SCORE ADVANCE TABLE</h2>
-      <div class="scoretable">
-        <div><canvas data-inv="ufo" width="16" height="7"></canvas><span class="mystery">= ? MYSTERY</span></div>
-        <div><canvas data-inv="squid" width="8" height="8"></canvas>= 30 POINTS</div>
-        <div><canvas data-inv="crab" width="11" height="8"></canvas>= 20 POINTS</div>
-        <div><canvas data-inv="octopus" width="12" height="8"></canvas>= 10 POINTS</div>
-      </div>
-    </section>
-
-    <section>
-      <h2>ACTUAL GAMEPLAY</h2>
-      <div class="shots">
-        <figure class="shot"><img src="screenshot-title.png" alt="Space Invaders title screen with score advance table" loading="lazy"></figure>
-        <figure class="shot"><img src="screenshot-game.png" alt="Space Invaders gameplay: invader grid, shields and cannon" loading="lazy"></figure>
-      </div>
-    </section>
-
-    <section>
-      <h2>WHAT YOU GET</h2>
-      <div class="features">
-        <div class="feat"><b>1978, FAITHFULLY</b>
-          11×5 invader grid, 2-frame animations, accelerating block movement,
-          and the original one-shot-on-screen rule. Waves start lower each level.</div>
-        <div class="feat"><b>DESTRUCTIBLE SHIELDS</b>
-          4 bunkers eroded shot by shot — and chewed through by descending invaders.</div>
-        <div class="feat"><b>8-BIT SOUNDS</b>
-          Every effect is a code-generated square wave: pew, boom, UFO siren,
-          and the four-note bass march. Press M for silence.</div>
-        <div class="feat"><b>CRT LOOK</b>
-          Scanlines, phosphor green and gel-overlay tints, hand-made 5×7 bitmap
-          font. Big crisp pixels, zero blur.</div>
-        <div class="feat"><b>MYSTERY UFO</b>
-          Crosses the top with its warbling siren. 50? 100? 300? One way to find out.</div>
-        <div class="feat"><b>NATIVE &amp; SAFE</b>
-          Swift + SpriteKit. Developer ID signed, Apple-notarized, automatic
-          updates via Sparkle. Hi-score saved between sessions.</div>
-      </div>
-    </section>
-
-    <section>
-      <h2>CONTROLS</h2>
-      <div class="controls">
-        <div><kbd>←</kbd><kbd>→</kbd> MOVE</div>
-        <div><kbd>SPACE</kbd> FIRE / START</div>
-        <div><kbd>P</kbd> PAUSE &nbsp; <kbd>M</kbd> MUTE &nbsp; <kbd>ESC</kbd> TITLE</div>
-      </div>
-    </section>
-  </div>
-
-  <div class="baseline"></div>
-  <footer>
-    MIT LICENSE · <a href="https://github.com/vincentlauriat/SpaceInvaders" target="_blank" rel="noopener">GITHUB</a> ·
-    <a href="https://lauriat.fr" target="_blank" rel="noopener">LAURIAT.FR</a> ·
-    <a href="https://vincentlauriat.github.io" target="_blank" rel="noopener">MORE APPS</a><br>
-    "SPACE INVADERS" IS A TRADEMARK OF TAITO CORPORATION.<br>
-    THIS IS AN UNOFFICIAL FAN HOMAGE, BUILT FOR FUN AND NOSTALGIA.
-  </footer>
-
-  <script>
-    // ---- pixel sprites (same patterns as the game) ----
-    const SPRITES = {
-      squid: [["...##...","..####..",".######.","##.##.##","########","..#..#..",".#.##.#.","#.#..#.#"],
-              ["...##...","..####..",".######.","##.##.##","########",".#.##.#.","#......#",".#....#."]],
-      crab: [["..#.....#..","...#...#...","..#######..",".##.###.##.","###########","#.#######.#","#.#.....#.#","...##.##..."],
-             ["..#.....#..","#..#...#..#","#.#######.#","###.###.###","###########",".#########.","..#.....#..",".#.......#."]],
-      octopus: [["....####....",".##########.","############","###..##..###","############","...##..##...","..##.##.##..","##........##"],
-                ["....####....",".##########.","############","###..##..###","############","..###..###..",".##..##..##.","..##....##.."]],
-      ufo: [[".....######.....","...##########...","..############..",".##.##.##.##.##.","################","...###....###...","....#......#...."]]
-    };
-    function draw(canvas, pattern, color) {
-      const ctx = canvas.getContext("2d");
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.fillStyle = color;
-      pattern.forEach((row, y) => [...row].forEach((ch, x) => { if (ch === "#") ctx.fillRect(x, y, 1, 1); }));
-    }
-    // hero row: three animated invaders
-    const hero = document.getElementById("invaders");
-    [["squid","#eaf5ea",8],["crab","#3cff6e",11],["octopus","#eaf5ea",12]].forEach(([type, color, w]) => {
-      const c = document.createElement("canvas");
-      c.width = w; c.height = 8;
-      c.style.width = (w * 5) + "px"; c.style.height = "40px";
-      c.dataset.type = type; c.dataset.color = color;
-      hero.appendChild(c);
-    });
-    let frame = 0;
-    function tick() {
-      frame ^= 1;
-      hero.querySelectorAll("canvas").forEach(c => draw(c, SPRITES[c.dataset.type][frame], c.dataset.color));
-    }
-    tick(); setInterval(tick, 600);
-    // score table sprites (static, scaled via CSS)
-    document.querySelectorAll("[data-inv]").forEach(c => {
-      const type = c.dataset.inv;
-      c.style.width = (c.width * 3) + "px"; c.style.height = (c.height * 3) + "px";
-      draw(c, SPRITES[type][0], type === "ufo" ? "#ff4a3d" : "#eaf5ea");
-    });
-    // ---- starfield ----
-    const s = document.getElementById("stars"), sc = s.getContext("2d");
-    function stars() {
-      s.width = innerWidth; s.height = innerHeight;
-      for (let i = 0; i < 90; i++) {
-        sc.fillStyle = `rgba(220,255,230,${0.15 + Math.random() * 0.5})`;
-        sc.fillRect(Math.random() * s.width, Math.random() * s.height, 2, 2);
-      }
-    }
-    stars(); addEventListener("resize", stars);
-    // ---- direct DMG link from the latest GitHub release ----
-    fetch("https://api.github.com/repos/vincentlauriat/SpaceInvaders/releases/latest")
-      .then(r => r.json())
-      .then(rel => {
-        const dmg = (rel.assets || []).find(a => a.name.endsWith(".dmg"));
-        if (dmg) document.getElementById("download").href = dmg.browser_download_url;
-        if (rel.tag_name) document.getElementById("dlmeta").textContent =
-          rel.tag_name.toUpperCase() + " · FREE · OPEN SOURCE · SIGNED & NOTARIZED · MACOS 13+ · AUTO-UPDATES";
-      }).catch(() => {});
-  </script>
+<a class="skip" href="#content"><span class="en">Skip to content</span><span class="fr">Aller au contenu</span><span class="zh">跳至內容</span></a>
+<header class="running"><div class="wrap">
+<a class="back" href="https://vincentlauriat.github.io/#w32"><svg class="arw l" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 8h11M9 4l4 4-4 4"/></svg><span class="en">Vincent Lauriat</span><span class="fr">Vincent Lauriat</span><span class="zh">Vincent Lauriat</span></a>
+<span class="here"><span class="num">32</span> · Space Invaders</span>
+<div class="langs" role="group" aria-label="Language / Langue / 語言"><button type="button" data-lang="en" aria-pressed="false">EN</button><button type="button" data-lang="fr" aria-pressed="false">FR</button><button type="button" data-lang="zh" aria-pressed="false">中文</button></div>
+<a class="gh" href="https://github.com/vincentlauriat/SpaceInvaders">GitHub</a>
+</div></header>
+<main>
+<section class="title"><div class="wrap g12">
+<h1 class="nm long" style="--len:14"><span class="no" aria-label="Work no. 32">32</span><span>Space Invaders</span></h1>
+<p class="role"><span class="en">Retro arcade for macOS, pixel-perfect</span><span class="fr">Arcade rétro pour macOS, au pixel près</span><span class="zh">像素級精準的 macOS 復古街機</span></p>
+<div class="t-left">
+<p class="thesis"><span class="en">A pixel-perfect, native macOS homage to the 1978 arcade classic.</span><span class="fr">Un hommage natif macOS, au pixel près, au classique d'arcade de 1978.</span><span class="zh">向 1978 年街機經典致敬的原生 macOS 作品，像素級精準。</span></p>
+<p class='lede'><span class="en">Original 224×256 resolution · CRT scanlines · 8-bit sounds · the four-note march that speeds up as they close in.</span><span class="fr">Résolution d'origine 224×256 · lignes de balayage CRT · sons 8 bits · la marche de quatre notes qui accélère à mesure qu'ils approchent.</span><span class="zh">原始 224×256 解析度 · CRT 掃描線 · 8 位元音效 · 隨著外星人逼近而越來越快的四音進行曲。</span></p>
+<div class="acts"><a class="btn" href="https://github.com/vincentlauriat/SpaceInvaders/releases/latest"><span class="en">Insert coin — download</span><span class="fr">Insérez une pièce — télécharger</span><span class="zh">投幣——下載</span></a><a class="lnk" href="https://github.com/vincentlauriat/SpaceInvaders"><span class="en">View source on GitHub</span><span class="fr">Voir les sources sur GitHub</span><span class="zh">在 GitHub 上檢視原始碼</span><svg class="arw" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 8h11M9 4l4 4-4 4"/></svg></a></div>
+<dl class="facts"><div><dt><span class="en">Requires</span><span class="fr">Configuration</span><span class="zh">系統需求</span></dt><dd>macOS 13+</dd></div><div><dt><span class="en">Distribution</span><span class="fr">Distribution</span><span class="zh">發行</span></dt><dd><span class="en">Signed &amp; notarized</span><span class="fr">Signé et notarié</span><span class="zh">已簽章與公證</span></dd></div><div><dt><span class="en">Updates</span><span class="fr">Mises à jour</span><span class="zh">更新</span></dt><dd><span class="en">Auto-updates</span><span class="fr">Mises à jour automatiques</span><span class="zh">自動更新</span></dd></div><div><dt><span class="en">Licence</span><span class="fr">Licence</span><span class="zh">授權</span></dt><dd><span class="en">Free · open source (MIT)</span><span class="fr">Gratuit · open source (MIT)</span><span class="zh">免費 · 開源（MIT）</span></dd></div></dl>
+</div>
+<div class="t-right"><figure class="plate ink"><div class="pl"><img src="screenshot-game.png" alt="Space Invaders gameplay: invader grid, shields and cannon" width="1344" height="1600" decoding="async"></div><figcaption><span class="fg"><span class="en">Fig.</span><span class="fr">Fig.</span><span class="zh">圖</span> 1</span></figcaption></figure></div>
+</div></section>
+<section class="opener" id="content"><div class="wrap"><div class="op-grid"><div class="numeral" aria-hidden="true">32</div><div class="op-text"><h2><span class="en">What you get</span><span class="fr">Ce que vous obtenez</span><span class="zh">你會得到什麼</span></h2></div></div></div></section>
+<section class="chapter"><div class="wrap"><ul class="specs"><li><h3><span class="en">1978, faithfully</span><span class="fr">1978, fidèlement</span><span class="zh">忠實重現 1978</span></h3><div><p><span class="en">11×5 invader grid, 2-frame animations, accelerating block movement, and the original one-shot-on-screen rule. Waves start lower each level.</span><span class="fr">Grille de 11×5 envahisseurs, animations en 2 images, déplacement en bloc qui accélère, et la règle d'origine d'un seul tir à l'écran. Les vagues partent plus bas à chaque niveau.</span><span class="zh">11×5 的外星人方陣、2 格動畫、整體加速移動，以及原版「畫面上只能有一發子彈」的規則。每升一關，敵陣起始位置就更低。</span></p></div></li><li><h3><span class="en">Destructible shields</span><span class="fr">Boucliers destructibles</span><span class="zh">可破壞的掩體</span></h3><div><p><span class="en">4 bunkers eroded shot by shot — and chewed through by descending invaders.</span><span class="fr">4 bunkers érodés tir après tir — et rongés par les envahisseurs qui descendent.</span><span class="zh">4 座掩體會被一發發子彈侵蝕——也會被下降的外星人啃穿。</span></p></div></li><li><h3><span class="en">8-bit sounds</span><span class="fr">Sons 8 bits</span><span class="zh">8 位元音效</span></h3><div><p><span class="en">Every effect is a code-generated square wave: pew, boom, UFO siren, and the four-note bass march. Press M for silence.</span><span class="fr">Chaque effet est une onde carrée générée par le code : pew, boum, sirène d'OVNI et la marche de basse à quatre notes. Appuyez sur M pour le silence.</span><span class="zh">每個音效都是以程式碼產生的方波：咻、轟、幽浮警笛，以及四音低音進行曲。按 M 即可靜音。</span></p></div></li><li><h3><span class="en">CRT look</span><span class="fr">Look CRT</span><span class="zh">CRT 外觀</span></h3><div><p><span class="en">Scanlines, phosphor green and gel-overlay tints, hand-made 5×7 bitmap font. Big crisp pixels, zero blur.</span><span class="fr">Lignes de balayage, vert phosphore et teintes de filtres gélatine, police bitmap 5×7 faite main. De gros pixels nets, zéro flou.</span><span class="zh">掃描線、磷光綠與彩色濾片色調，以及手工打造的 5×7 點陣字型。大而銳利的像素，完全不模糊。</span></p></div></li><li><h3><span class="en">Mystery UFO</span><span class="fr">OVNI mystère</span><span class="zh">神秘幽浮</span></h3><div><p><span class="en">Crosses the top with its warbling siren. 50? 100? 300? One way to find out.</span><span class="fr">Il traverse le haut de l'écran avec sa sirène chevrotante. 50 ? 100 ? 300 ? Un seul moyen de le savoir.</span><span class="zh">帶著顫抖的警笛聲橫越畫面上方。50？100？300？只有一個方法能知道。</span></p></div></li><li><h3><span class="en">Native &amp; safe</span><span class="fr">Natif et sûr</span><span class="zh">原生且安全</span></h3><div><p><span class="en">Swift + SpriteKit. Developer ID signed, Apple-notarized, automatic updates via Sparkle. Hi-score saved between sessions.</span><span class="fr">Swift + SpriteKit. Signé Developer ID, notarié par Apple, mises à jour automatiques via Sparkle. Meilleur score conservé d'une session à l'autre.</span><span class="zh">Swift + SpriteKit。Developer ID 簽章、Apple 公證、透過 Sparkle 自動更新。最高分會在每次遊玩之間保存。</span></p></div></li></ul></div></section>
+<section class="chapter" id="score"><div class="wrap g12"><div class="ch-head"><h2><span class="en">Score advance table</span><span class="fr">Table des scores</span><span class="zh">得分表</span></h2></div><div class="ch-body"><div class="tbl-wrap"><table class="tbl"><thead><tr><th><span class="en">Target</span><span class="fr">Cible</span><span class="zh">目標</span></th><th><span class="en">Points</span><span class="fr">Points</span><span class="zh">分數</span></th></tr></thead><tbody><tr><td><span class="en">UFO</span><span class="fr">OVNI</span><span class="zh">幽浮</span></td><td><span class="en">? Mystery</span><span class="fr">? Mystère</span><span class="zh">？神秘</span></td></tr><tr><td><span class="en">Squid</span><span class="fr">Calmar</span><span class="zh">烏賊</span></td><td>30</td></tr><tr><td><span class="en">Crab</span><span class="fr">Crabe</span><span class="zh">螃蟹</span></td><td>20</td></tr><tr><td><span class="en">Octopus</span><span class="fr">Pieuvre</span><span class="zh">章魚</span></td><td>10</td></tr></tbody></table></div></div></div></section><section class="chapter" id="gameplay"><div class="wrap g12"><div class="ch-head"><h2><span class="en">Actual gameplay</span><span class="fr">En jeu</span><span class="zh">實際遊戲畫面</span></h2></div><div class="ch-body"><div class="plates"><figure class="plate ink"><div class="pl"><img src="screenshot-title.png" alt="Space Invaders title screen with score advance table" width="1344" height="1600" loading="lazy" decoding="async"></div><figcaption><span class="fg"><span class="en">Fig.</span><span class="fr">Fig.</span><span class="zh">圖</span> 2</span></figcaption></figure></div></div></div></section><section class="chapter" id="controls"><div class="wrap g12"><div class="ch-head"><h2><span class="en">Controls</span><span class="fr">Commandes</span><span class="zh">操作方式</span></h2></div><div class="ch-body"><div class="tbl-wrap"><table class="tbl"><thead><tr><th><span class="en">Key</span><span class="fr">Touche</span><span class="zh">按鍵</span></th><th><span class="en">Action</span><span class="fr">Action</span><span class="zh">動作</span></th></tr></thead><tbody><tr><td>← →</td><td><span class="en">Move</span><span class="fr">Se déplacer</span><span class="zh">移動</span></td></tr><tr><td><span class="en">Space</span><span class="fr">Espace</span><span class="zh">空白鍵</span></td><td><span class="en">Fire / start</span><span class="fr">Tirer / commencer</span><span class="zh">射擊／開始</span></td></tr><tr><td>P</td><td><span class="en">Pause</span><span class="fr">Pause</span><span class="zh">暫停</span></td></tr><tr><td>M</td><td><span class="en">Mute</span><span class="fr">Couper le son</span><span class="zh">靜音</span></td></tr><tr><td>Esc</td><td><span class="en">Title</span><span class="fr">Écran titre</span><span class="zh">標題畫面</span></td></tr></tbody></table></div></div></div></section>
+<section class="close"><div class="wrap g12"><h2><span class="en">Insert coin</span><span class="fr">Insérez une pièce</span><span class="zh">投幣</span></h2><div class="c-r"><p><span class="en">Free · open source · signed &amp; notarized · macOS 13+ · auto-updates</span><span class="fr">Gratuit · open source · signé et notarié · macOS 13+ · mises à jour automatiques</span><span class="zh">免費 · 開源 · 已簽章與公證 · macOS 13+ · 自動更新</span></p><div class="acts"><a class="btn" href="https://github.com/vincentlauriat/SpaceInvaders/releases/latest"><span class="en">Insert coin — download</span><span class="fr">Insérez une pièce — télécharger</span><span class="zh">投幣——下載</span></a><a class="lnk" href="https://github.com/vincentlauriat/SpaceInvaders"><span class="en">View source on GitHub</span><span class="fr">Voir les sources sur GitHub</span><span class="zh">在 GitHub 上檢視原始碼</span><svg class="arw" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 8h11M9 4l4 4-4 4"/></svg></a></div></div></div></section>
+</main>
+<footer class="colophon"><div class="wrap g12"><div class="c1"><h2>Space Invaders</h2><p><span class="en">Work no.</span><span class="fr">Réalisation n°</span><span class="zh">作品編號</span> <span class="num">32</span> <span class="en">in the works of Vincent Lauriat</span><span class="fr">dans les réalisations de Vincent Lauriat</span><span class="zh">收錄於 Vincent Lauriat 作品集</span>.</p><p><a href="https://vincentlauriat.github.io/#w32"><span class="en">All works</span><span class="fr">Toutes les réalisations</span><span class="zh">全部作品</span></a></p></div><div class="c2"><h2><span class="en">Source</span><span class="fr">Source</span><span class="zh">原始碼</span></h2><p><a href="https://github.com/vincentlauriat/SpaceInvaders">github.com/vincentlauriat/SpaceInvaders</a></p><p><span class="en">MIT License</span><span class="fr">Licence MIT</span><span class="zh">MIT 授權</span> · © 2026 Vincent Lauriat</p><p><span class="en">“Space Invaders” is a trademark of Taito Corporation. This is an unofficial fan homage, built for fun and nostalgia.</span><span class="fr">« Space Invaders » est une marque de Taito Corporation. Ceci est un hommage de fan non officiel, réalisé pour le plaisir et la nostalgie.</span><span class="zh">「Space Invaders」是 Taito Corporation 的商標。本作為非官方的粉絲致敬作品，純為樂趣與懷舊而製作。</span></p><p><a href="https://lauriat.fr">lauriat.fr</a></p></div><div class="c3"><h2><span class="en">About this page</span><span class="fr">À propos de cette page</span><span class="zh">關於本頁</span></h2><p><span class="en">Set in Schibsted Grotesk, on the grid of the book it belongs to.</span><span class="fr">Composée en Schibsted Grotesk, sur la grille du livre auquel elle appartient.</span><span class="zh">以 Schibsted Grotesk 排版，沿用其所屬作品集的網格。</span></p></div></div></footer>
+<script src="/assets/monograph/v1/monograph.js"></script>
 </body>
 </html>
