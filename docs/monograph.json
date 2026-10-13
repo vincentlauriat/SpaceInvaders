@@ -1,0 +1,197 @@
+{
+  "name": "Space Invaders",
+  "no": "32",
+  "repo": "vincentlauriat/SpaceInvaders",
+  "url": "https://vincentlauriat.github.io/SpaceInvaders/",
+  "accent": "#3cff6e",
+  "meta": {
+    "title": "Space Invaders for macOS — retro arcade, pixel-perfect",
+    "description": "Space Invaders for macOS — a pixel-perfect, native homage to the 1978 arcade classic. Original 224×256 resolution, CRT scanlines, 8-bit sounds. Free, signed & notarized.",
+    "og_image": "https://vincentlauriat.github.io/SpaceInvaders/icon.png",
+    "favicon": "icon.png",
+    "head_extra": "<link rel=\"canonical\" href=\"https://vincentlauriat.github.io/SpaceInvaders/\">"
+  },
+  "role": {
+    "en": "Retro arcade for macOS, pixel-perfect",
+    "fr": "Arcade rétro pour macOS, au pixel près",
+    "zh": "像素級精準的 macOS 復古街機"
+  },
+  "thesis": {
+    "en": "A pixel-perfect, native macOS homage to the 1978 arcade classic.",
+    "fr": "Un hommage natif macOS, au pixel près, au classique d'arcade de 1978.",
+    "zh": "向 1978 年街機經典致敬的原生 macOS 作品，像素級精準。"
+  },
+  "lede": {
+    "en": "Original 224×256 resolution · CRT scanlines · 8-bit sounds · the four-note march that speeds up as they close in.",
+    "fr": "Résolution d'origine 224×256 · lignes de balayage CRT · sons 8 bits · la marche de quatre notes qui accélère à mesure qu'ils approchent.",
+    "zh": "原始 224×256 解析度 · CRT 掃描線 · 8 位元音效 · 隨著外星人逼近而越來越快的四音進行曲。"
+  },
+  "actions": [
+    {
+      "primary": true,
+      "href": "https://github.com/vincentlauriat/SpaceInvaders/releases/latest",
+      "label": {"en": "Insert coin — download", "fr": "Insérez une pièce — télécharger", "zh": "投幣——下載"}
+    },
+    {
+      "href": "https://github.com/vincentlauriat/SpaceInvaders",
+      "label": {"en": "View source on GitHub", "fr": "Voir les sources sur GitHub", "zh": "在 GitHub 上檢視原始碼"}
+    }
+  ],
+  "facts": [
+    {"k": {"en": "Requires", "fr": "Configuration", "zh": "系統需求"}, "v": "macOS 13+"},
+    {"k": {"en": "Distribution", "fr": "Distribution", "zh": "發行"},
+     "v": {"en": "Signed &amp; notarized", "fr": "Signé et notarié", "zh": "已簽章與公證"}},
+    {"k": {"en": "Updates", "fr": "Mises à jour", "zh": "更新"},
+     "v": {"en": "Auto-updates", "fr": "Mises à jour automatiques", "zh": "自動更新"}},
+    {"k": {"en": "Licence", "fr": "Licence", "zh": "授權"},
+     "v": {"en": "Free · open source (MIT)", "fr": "Gratuit · open source (MIT)", "zh": "免費 · 開源（MIT）"}}
+  ],
+  "hero": {
+    "src": "screenshot-game.png",
+    "w": 1344,
+    "h": 1600,
+    "dark": true,
+    "alt": "Space Invaders gameplay: invader grid, shields and cannon"
+  },
+  "opener": {
+    "h": {"en": "What you get", "fr": "Ce que vous obtenez", "zh": "你會得到什麼"}
+  },
+  "features": [
+    {
+      "h": {"en": "1978, faithfully", "fr": "1978, fidèlement", "zh": "忠實重現 1978"},
+      "p": {
+        "en": "11×5 invader grid, 2-frame animations, accelerating block movement, and the original one-shot-on-screen rule. Waves start lower each level.",
+        "fr": "Grille de 11×5 envahisseurs, animations en 2 images, déplacement en bloc qui accélère, et la règle d'origine d'un seul tir à l'écran. Les vagues partent plus bas à chaque niveau.",
+        "zh": "11×5 的外星人方陣、2 格動畫、整體加速移動，以及原版「畫面上只能有一發子彈」的規則。每升一關，敵陣起始位置就更低。"
+      }
+    },
+    {
+      "h": {"en": "Destructible shields", "fr": "Boucliers destructibles", "zh": "可破壞的掩體"},
+      "p": {
+        "en": "4 bunkers eroded shot by shot — and chewed through by descending invaders.",
+        "fr": "4 bunkers érodés tir après tir — et rongés par les envahisseurs qui descendent.",
+        "zh": "4 座掩體會被一發發子彈侵蝕——也會被下降的外星人啃穿。"
+      }
+    },
+    {
+      "h": {"en": "8-bit sounds", "fr": "Sons 8 bits", "zh": "8 位元音效"},
+      "p": {
+        "en": "Every effect is a code-generated square wave: pew, boom, UFO siren, and the four-note bass march. Press M for silence.",
+        "fr": "Chaque effet est une onde carrée générée par le code : pew, boum, sirène d'OVNI et la marche de basse à quatre notes. Appuyez sur M pour le silence.",
+        "zh": "每個音效都是以程式碼產生的方波：咻、轟、幽浮警笛，以及四音低音進行曲。按 M 即可靜音。"
+      }
+    },
+    {
+      "h": {"en": "CRT look", "fr": "Look CRT", "zh": "CRT 外觀"},
+      "p": {
+        "en": "Scanlines, phosphor green and gel-overlay tints, hand-made 5×7 bitmap font. Big crisp pixels, zero blur.",
+        "fr": "Lignes de balayage, vert phosphore et teintes de filtres gélatine, police bitmap 5×7 faite main. De gros pixels nets, zéro flou.",
+        "zh": "掃描線、磷光綠與彩色濾片色調，以及手工打造的 5×7 點陣字型。大而銳利的像素，完全不模糊。"
+      }
+    },
+    {
+      "h": {"en": "Mystery UFO", "fr": "OVNI mystère", "zh": "神秘幽浮"},
+      "p": {
+        "en": "Crosses the top with its warbling siren. 50? 100? 300? One way to find out.",
+        "fr": "Il traverse le haut de l'écran avec sa sirène chevrotante. 50 ? 100 ? 300 ? Un seul moyen de le savoir.",
+        "zh": "帶著顫抖的警笛聲橫越畫面上方。50？100？300？只有一個方法能知道。"
+      }
+    },
+    {
+      "h": {"en": "Native &amp; safe", "fr": "Natif et sûr", "zh": "原生且安全"},
+      "p": {
+        "en": "Swift + SpriteKit. Developer ID signed, Apple-notarized, automatic updates via Sparkle. Hi-score saved between sessions.",
+        "fr": "Swift + SpriteKit. Signé Developer ID, notarié par Apple, mises à jour automatiques via Sparkle. Meilleur score conservé d'une session à l'autre.",
+        "zh": "Swift + SpriteKit。Developer ID 簽章、Apple 公證、透過 Sparkle 自動更新。最高分會在每次遊玩之間保存。"
+      }
+    }
+  ],
+  "chapters": [
+    {
+      "id": "score",
+      "h": {"en": "Score advance table", "fr": "Table des scores", "zh": "得分表"},
+      "blocks": [
+        {
+          "type": "table",
+          "head": [
+            {"en": "Target", "fr": "Cible", "zh": "目標"},
+            {"en": "Points", "fr": "Points", "zh": "分數"}
+          ],
+          "rows": [
+            [{"en": "UFO", "fr": "OVNI", "zh": "幽浮"}, {"en": "? Mystery", "fr": "? Mystère", "zh": "？神秘"}],
+            [{"en": "Squid", "fr": "Calmar", "zh": "烏賊"}, "30"],
+            [{"en": "Crab", "fr": "Crabe", "zh": "螃蟹"}, "20"],
+            [{"en": "Octopus", "fr": "Pieuvre", "zh": "章魚"}, "10"]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "gameplay",
+      "h": {"en": "Actual gameplay", "fr": "En jeu", "zh": "實際遊戲畫面"},
+      "blocks": [
+        {
+          "type": "plates",
+          "items": [
+            {
+              "src": "screenshot-title.png",
+              "w": 1344,
+              "h": 1600,
+              "dark": true,
+              "alt": "Space Invaders title screen with score advance table"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "controls",
+      "h": {"en": "Controls", "fr": "Commandes", "zh": "操作方式"},
+      "blocks": [
+        {
+          "type": "table",
+          "head": [
+            {"en": "Key", "fr": "Touche", "zh": "按鍵"},
+            {"en": "Action", "fr": "Action", "zh": "動作"}
+          ],
+          "rows": [
+            ["← →", {"en": "Move", "fr": "Se déplacer", "zh": "移動"}],
+            [{"en": "Space", "fr": "Espace", "zh": "空白鍵"}, {"en": "Fire / start", "fr": "Tirer / commencer", "zh": "射擊／開始"}],
+            ["P", {"en": "Pause", "fr": "Pause", "zh": "暫停"}],
+            ["M", {"en": "Mute", "fr": "Couper le son", "zh": "靜音"}],
+            ["Esc", {"en": "Title", "fr": "Écran titre", "zh": "標題畫面"}]
+          ]
+        }
+      ]
+    }
+  ],
+  "close": {
+    "h": {"en": "Insert coin", "fr": "Insérez une pièce", "zh": "投幣"},
+    "p": {
+      "en": "Free · open source · signed &amp; notarized · macOS 13+ · auto-updates",
+      "fr": "Gratuit · open source · signé et notarié · macOS 13+ · mises à jour automatiques",
+      "zh": "免費 · 開源 · 已簽章與公證 · macOS 13+ · 自動更新"
+    },
+    "actions": [
+      {
+        "primary": true,
+        "href": "https://github.com/vincentlauriat/SpaceInvaders/releases/latest",
+        "label": {"en": "Insert coin — download", "fr": "Insérez une pièce — télécharger", "zh": "投幣——下載"}
+      },
+      {
+        "href": "https://github.com/vincentlauriat/SpaceInvaders",
+        "label": {"en": "View source on GitHub", "fr": "Voir les sources sur GitHub", "zh": "在 GitHub 上檢視原始碼"}
+      }
+    ]
+  },
+  "colophon": {
+    "notes": [
+      {
+        "en": "“Space Invaders” is a trademark of Taito Corporation. This is an unofficial fan homage, built for fun and nostalgia.",
+        "fr": "« Space Invaders » est une marque de Taito Corporation. Ceci est un hommage de fan non officiel, réalisé pour le plaisir et la nostalgie.",
+        "zh": "「Space Invaders」是 Taito Corporation 的商標。本作為非官方的粉絲致敬作品，純為樂趣與懷舊而製作。"
+      },
+      "<a href=\"https://lauriat.fr\">lauriat.fr</a>"
+    ]
+  }
+}
